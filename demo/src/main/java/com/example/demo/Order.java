@@ -33,4 +33,45 @@ public class Order {
     private Boolean isHighValue(){
       return totalPrice.compareTo(BigDecimal.valueOf(100)) > 100;
     };
+
+
+    public Long getId() {
+        return Id;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public LocalDateTime getOrderDate() {
+        return orderDate;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        this.Status = status;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
+    }
+
+
+
+
 }

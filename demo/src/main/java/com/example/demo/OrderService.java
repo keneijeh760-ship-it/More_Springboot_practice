@@ -38,4 +38,8 @@ public class OrderService {
     public List<Order> findByStatus(String Status){
         return orderRepository.findbyStatus(Status);
     }
+
+    public List<Order> findAll(){
+        return orderRepository.findAll();
+    }
 }

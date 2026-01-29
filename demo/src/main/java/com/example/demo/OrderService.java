@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -41,5 +42,19 @@ public class OrderService {
 
     public List<Order> findAll(){
         return orderRepository.findAll();
+    }
+
+
+    @Transactional
+    public Order UpdateOrder ( String Status, Long Id){
+        Order order = orderRepository.findById(Id)
+                .orElseThrow(() -> new IllegalArgumentException("Order Not Found"));
+
+        if (order.getStatus().equals("DELIVERED")){
+            orderRepository.save(order);
+
+        }
+
+        return order;
     }
 }

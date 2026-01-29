@@ -3,6 +3,7 @@ package com.example.demo;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -32,5 +33,9 @@ public class OrderService {
             throw new IllegalArgumentException("Admins cannot place orders");
         }
         orderRepository.save(order);
+    }
+
+    public List<Order> findByStatus(String Status){
+        return orderRepository.findbyStatus(Status);
     }
 }

@@ -1,9 +1,7 @@
 package com.example.demo;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,20 +15,22 @@ public class OrderController {
     }
 
     @PostMapping
-    public void createOrder(Order order){
-        orderService.saveOrder(order);
+    public ResponseEntity<Order> createOrder(Order order){
+        return ResponseEntity.status(201).body(order);
     }
 
 
-    @GetMapping
-    public List<Order> findByStatus(String Status){
-        return orderService.findByStatus(Status);
+    @GetMapping(path = "/api/v1/order/status?type=PENDING")
+    public ResponseEntity<List<Order>> findByStatus(String Status){
+        return ResponseEntity.ok(orderService.findByStatus(Status));
     }
 
     @GetMapping(path = "/all")
-    public List<Order> findAll(){
-        return orderService.findAll();
+    public ResponseEntity<List<Order>> findAll(){
+        return ResponseEntity.ok(orderService.findAll());
     }
+
+
 
 
 

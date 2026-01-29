@@ -14,7 +14,7 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public void saveOrder (Order order){
+    public Order saveOrder (Order order){
 
         if (order.getTotalPrice().compareTo(new BigDecimal(10)) < 10){
             throw new IllegalArgumentException("Not enough money to place an order");
@@ -32,7 +32,7 @@ public class OrderService {
         if (order.getCustomerName() == "ADMIN"){
             throw new IllegalArgumentException("Admins cannot place orders");
         }
-        orderRepository.save(order);
+        return orderRepository.save(order);
     }
 
     public List<Order> findByStatus(String Status){

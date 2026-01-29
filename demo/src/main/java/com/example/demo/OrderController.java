@@ -15,7 +15,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(Order order){
+    public ResponseEntity<Order> createOrder(@RequestBody Order order){
         return ResponseEntity.status(201).body(order);
     }
 
@@ -28,6 +28,14 @@ public class OrderController {
     @GetMapping(path = "/all")
     public ResponseEntity<List<Order>> findAll(){
         return ResponseEntity.ok(orderService.findAll());
+    }
+
+
+    @PutMapping
+    public ResponseEntity<Order> updateOrder(@RequestBody Order order,
+                                             @RequestParam Long id,
+                                             @RequestParam String status){
+        return ResponseEntity.ok(orderService.UpdateOrder( status, id));
     }
 
 

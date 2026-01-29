@@ -33,7 +33,7 @@ public class OrderController {
 
     @PutMapping
     public ResponseEntity<Order> updateOrder(@RequestBody Order order,
-                                             @RequestParam Long id,
+                                             Long id,
                                              @RequestParam String status){
         return ResponseEntity.ok(orderService.UpdateOrder( status, id));
     }

@@ -17,20 +17,20 @@ public class OrderService {
 
     public Order saveOrder (Order order){
 
-        if (order.getTotalPrice().compareTo(new BigDecimal(10)) < 10){
+        if (order.getTotalPrice().compareTo(new BigDecimal(10)) < 0){
             throw new IllegalArgumentException("Not enough money to place an order");
-        } else if (order.getTotalPrice().compareTo(BigDecimal.valueOf(1000)) > 1000) {
+        } else if (order.getTotalPrice().compareTo(BigDecimal.valueOf(1000)) > 0) {
             throw new IllegalArgumentException("Order Price too High");
 
             
         }
 
-        if (order.getStatus() != "PENDING"){
+        if (!"PENDING".equals(order.getStatus()) ){
             throw new IllegalArgumentException("Order Status Not PENDING");
 
         }
 
-        if (order.getCustomerName() == "ADMIN"){
+        if (order.getCustomerName().equals("ADMIN")){
             throw new IllegalArgumentException("Admins cannot place orders");
         }
         return orderRepository.save(order);
@@ -51,10 +51,10 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalArgumentException("Order Not Found"));
 
         if (order.getStatus().equals("DELIVERED")){
-            orderRepository.save(order);
+            throw new IllegalArgumentException("Order Status DELIVERED cant be changed");
 
         }
-
+        order.setStatus(Status);
         return order;
     }
 }

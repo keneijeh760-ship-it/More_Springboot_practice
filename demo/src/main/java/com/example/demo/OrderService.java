@@ -37,7 +37,7 @@ public class OrderService {
 
         }
 
-        if (order.getCustomer().equals("ADMIN")){
+        if ("ADMIN".equals(order.getCustomer().getName())){
             throw new IllegalArgumentException("Admins cannot place orders");
         }
         return orderRepository.save(order);

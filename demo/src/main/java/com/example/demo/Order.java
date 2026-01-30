@@ -68,6 +68,11 @@ public class Order {
         this.orderDate = orderDate;
     }
 
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+
 
 
 

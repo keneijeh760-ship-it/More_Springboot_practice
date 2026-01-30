@@ -10,9 +10,11 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
 
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, CustomerRepository customerRepository) {
         this.orderRepository = orderRepository;
+        this.customerRepository = customerRepository;
     }
 
     public Order saveOrder (Order order){
@@ -56,5 +58,13 @@ public class OrderService {
         }
         order.setStatus(Status);
         return order;
+    }
+
+
+    public Customer saveOrder(Order order, Long customerId){
+        Customer customer= customerRepository.findById(customerId)
+                .orElseThrow(()-> new IllegalStateException("Customer does not exist"));
+
+
     }
 }

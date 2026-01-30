@@ -16,9 +16,9 @@ public class Order {
     )
     private Long Id;
 
-    @Column(name = "Name",
-    nullable = false)
-    private String customerName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
     @Column(name = "Price",
     nullable = false)
     private BigDecimal totalPrice;
@@ -39,8 +39,8 @@ public class Order {
         return Id;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public Customer getCustomer() {
+        return customer;
     }
 
     public BigDecimal getTotalPrice() {
@@ -59,9 +59,6 @@ public class Order {
         this.Status = status;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
 
     public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;

@@ -20,7 +20,7 @@ public class OrderController {
     }
 
 
-    @GetMapping(path = "/api/v1/order/status?type=PENDING")
+    @GetMapping(path = "status")
     public ResponseEntity<List<Order>> findByStatus(String Status){
         return ResponseEntity.ok(orderService.findByStatus(Status));
     }

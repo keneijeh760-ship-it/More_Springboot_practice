@@ -61,9 +61,15 @@ public class OrderService {
     }
 
 
-    public Customer saveOrder(Order order, Long customerId){
+    public Order saveOrder(Order order, Long customerId){
         Customer customer= customerRepository.findById(customerId)
                 .orElseThrow(()-> new IllegalStateException("Customer does not exist"));
+
+        order.setCustomer(customer);
+
+        orderRepository.save(order);
+
+        return order;
 
 
     }

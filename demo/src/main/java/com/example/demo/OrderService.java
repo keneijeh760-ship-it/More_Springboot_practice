@@ -17,7 +17,12 @@ public class OrderService {
         this.customerRepository = customerRepository;
     }
 
-    public Order saveOrder (Order order){
+    public Order saveOrder (Order order, Long customerId){
+
+        Customer customer= customerRepository.findById(customerId)
+                .orElseThrow(()-> new IllegalStateException("Customer does not exist"));
+
+        order.setCustomer(customer);
 
         if (order.getTotalPrice().compareTo(new BigDecimal(10)) < 0){
             throw new IllegalArgumentException("Not enough money to place an order");
@@ -56,21 +61,23 @@ public class OrderService {
             throw new IllegalArgumentException("Order Status DELIVERED cant be changed");
 
         }
+
         order.setStatus(Status);
-        return order;
-    }
-
-
-    public Order saveOrder(Order order, Long customerId){
-        Customer customer= customerRepository.findById(customerId)
-                .orElseThrow(()-> new IllegalStateException("Customer does not exist"));
-
-        order.setCustomer(customer);
-
         orderRepository.save(order);
 
         return order;
-
-
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

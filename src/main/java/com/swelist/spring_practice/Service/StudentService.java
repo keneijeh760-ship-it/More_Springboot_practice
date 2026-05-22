@@ -15,16 +15,24 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-    public Student createStudent (StudentRequestDTO dto){
-        Optional<Student> student = studentRepository.findByEmail(dto.getEmail());
+    public Student createStudent(StudentRequestDTO dto) {
+        Optional<Student> existingStudent = studentRepository.findByEmail(dto.getEmail());
 
-        if (student.isPresent()){
+        if (existingStudent.isPresent()) {
             throw new RuntimeException("Student already exists");
         }
 
-        Student saved = student.get();
+        Student student = Student.builder()
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
+                .email(dto.getEmail())
+                .department(dto.getDepartment())
+                .level(dto.getLevel())
+                .createdAt(Instant.now())
+                .updatedAt(Instant.now())
+                .build();
 
-        return studentRepository.save(saved);
+        return studentRepository.save(student);
     }
 
     public List<Student> findAllStudents(){
@@ -57,6 +65,11 @@ public class StudentService {
             throw new  RuntimeException("Student department the same");
 
         }
+        student.setLevel(dto.getLevel());
+        student.setFirstName(dto.getFirstName());
+        student.setLastName(dto.getLastName());
+        student.setEmail(dto.getEmail());
+        student.setDepartment(dto.getDepartment());
         return studentRepository.save(student);
     }
 

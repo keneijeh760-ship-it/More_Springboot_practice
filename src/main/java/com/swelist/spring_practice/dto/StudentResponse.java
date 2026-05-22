@@ -16,6 +16,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Builder
 public class StudentResponse {
+    private Long id;
     @NotBlank
     private String firstName;
     @NotBlank

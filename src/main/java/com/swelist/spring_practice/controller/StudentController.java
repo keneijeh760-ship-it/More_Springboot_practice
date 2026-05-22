@@ -4,6 +4,7 @@ import com.swelist.spring_practice.Service.StudentService;
 import com.swelist.spring_practice.dto.StudentRequestDTO;
 import com.swelist.spring_practice.dto.StudentResponse;
 import com.swelist.spring_practice.entity.Student;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,16 +46,37 @@ public class StudentController {
 
     }
 
+    @GetMapping("/level/{level}")
+    public ResponseEntity<List<StudentResponse>> getStudentByLevel(@PathVariable Integer level) {
+        List<Student> student = studentService.findStudentByLevel(level);
+        List<StudentResponse> studentResponses = new ArrayList<>();
+        for (Student stud : student){
+            studentResponses.add(StudentToResponseDTO(stud));
+
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(studentResponses);
+    }
+
+    @GetMapping("/department/{department}")
+    public ResponseEntity<List<StudentResponse>> getStudentByDepartment(@PathVariable String department) {
+        List<Student> students = studentService.findStudentByDepartment(department);
+        List<StudentResponse> studentResponses = new ArrayList<>();
+        for (Student stud : students){
+            studentResponses.add(StudentToResponseDTO(stud));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(studentResponses);
+    }
+
 
 
     @PostMapping
-    public ResponseEntity<StudentResponse> createStudent(@RequestBody StudentRequestDTO dto) {
+    public ResponseEntity<StudentResponse> createStudent(@Valid @RequestBody StudentRequestDTO dto) {
         Student student1 = studentService.createStudent(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(StudentToResponseDTO(student1));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentResponse> updateStudentById(@PathVariable Long id, @RequestBody StudentRequestDTO dto) {
+    public ResponseEntity<StudentResponse> updateStudentById( @PathVariable Long id,@Valid @RequestBody StudentRequestDTO dto) {
         Student student = studentService.UpdateStudent(id, dto);
         return ResponseEntity.ok().body(StudentToResponseDTO(student));
     }

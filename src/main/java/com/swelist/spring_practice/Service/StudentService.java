@@ -38,6 +38,14 @@ public class StudentService {
 
     }
 
+    public List<Student> findStudentByDepartment(String Department){
+        return studentRepository.findByDepartment(Department);
+    }
+
+    public List<Student> findStudentByLevel(Integer Level){
+        return studentRepository.findByLevel(Level);
+    }
+
     public Student UpdateStudent(Long Id, StudentRequestDTO dto){
         Student student = findStudentById(Id);
 

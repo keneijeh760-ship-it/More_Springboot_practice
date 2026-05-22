@@ -1,15 +1,16 @@
 package com.swelist.spring_practice.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
 @Entity
 @Getter
 @Setter
-
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Student {
     @Id
     @SequenceGenerator(sequenceName = "student",
@@ -19,7 +20,7 @@ public class Student {
     private String firstName;
     @Column(name = "last_name", nullable = false)
     private String lastName;
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
     @Column(name = "department", nullable = false)
     private String department;

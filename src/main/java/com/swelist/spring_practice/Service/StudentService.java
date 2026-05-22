@@ -4,11 +4,12 @@ import com.swelist.spring_practice.Repository.StudentRepository;
 import com.swelist.spring_practice.dto.StudentRequestDTO;
 import com.swelist.spring_practice.entity.Student;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-
+@Service
 @RequiredArgsConstructor
 public class StudentService {
 
@@ -44,7 +45,7 @@ public class StudentService {
 
         if (student.getLevel() == dto.getLevel()){
             throw new  RuntimeException("Student level the same");
-        } else if (student.getDepartment() == dto.getDepartment()) {
+        } else if (student.getDepartment().equals(dto.getDepartment())) {
             throw new  RuntimeException("Student department the same");
 
         }

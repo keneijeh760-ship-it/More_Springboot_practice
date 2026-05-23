@@ -6,6 +6,7 @@ import com.swelist.spring_practice.dto.StudentResponse;
 import com.swelist.spring_practice.entity.Student;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,16 +28,17 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StudentResponse>> getAllStudents() {
-        List<Student> student = studentService.findAllStudents();
+    public ResponseEntity<Page<StudentResponse>> getAllStudents(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        Page<Student> students = studentService.findAllStudents( size, page,  direction, sortBy);
 
-        List<StudentResponse> studentResponses = new ArrayList<>();
+        Page<StudentResponse> studentResponses = students.map(this::StudentToResponseDTO);
 
-        for (Student stud : student){
-            studentResponses.add(StudentToResponseDTO(stud));
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(studentResponses);
-
+        return ResponseEntity.ok(studentResponses);
     }
 
     @GetMapping("/{id}")

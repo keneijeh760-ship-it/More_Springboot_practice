@@ -2,8 +2,15 @@ package com.swelist.spring_practice.Service;
 
 import com.swelist.spring_practice.Repository.StudentRepository;
 import com.swelist.spring_practice.dto.StudentRequestDTO;
+import com.swelist.spring_practice.entity.Department;
 import com.swelist.spring_practice.entity.Student;
+import com.swelist.spring_practice.exceptionhandler.DuplicateStudentException;
+import com.swelist.spring_practice.exceptionhandler.StudentNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -14,19 +21,22 @@ import java.util.Optional;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final DepartmentService departmentService;
 
     public Student createStudent(StudentRequestDTO dto) {
         Optional<Student> existingStudent = studentRepository.findByEmail(dto.getEmail());
 
         if (existingStudent.isPresent()) {
-            throw new RuntimeException("Student already exists");
+            throw new DuplicateStudentException("Student already exists");
         }
+
+        Department department = departmentService.findOrCreateDepartment(dto.getDepartment());
 
         Student student = Student.builder()
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .email(dto.getEmail())
-                .department(dto.getDepartment())
+                .department(department)
                 .level(dto.getLevel())
                 .createdAt(Instant.now())
                 .updatedAt(Instant.now())
@@ -35,14 +45,18 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public List<Student> findAllStudents(){
+    public Page<Student> findAllStudents(int size, int page, String direction, String sortBy){
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
 
-       return  studentRepository.findAll();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return studentRepository.findAll(pageable);
     }
 
     public Student findStudentById(Long id){
         return studentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new StudentNotFoundException("Student not found"));
 
     }
 
@@ -54,22 +68,25 @@ public class StudentService {
         return studentRepository.findByLevel(Level);
     }
 
-    public Student UpdateStudent(Long Id, StudentRequestDTO dto){
+    public Student UpdateStudent(Long Id, StudentRequestDTO dto) {
         Student student = findStudentById(Id);
 
-        student.setUpdatedAt(Instant.now());
+        Optional<Student> existingStudentWithEmail = studentRepository.findByEmail(dto.getEmail());
 
-        if (student.getLevel() == dto.getLevel()){
-            throw new  RuntimeException("Student level the same");
-        } else if (student.getDepartment().equals(dto.getDepartment())) {
-            throw new  RuntimeException("Student department the same");
-
+        if (existingStudentWithEmail.isPresent() &&
+                !existingStudentWithEmail.get().getId().equals(Id)) {
+            throw new DuplicateStudentException("Email already belongs to another student");
         }
+
+        Department department = departmentService.findOrCreateDepartment(dto.getDepartment());
+
+        student.setUpdatedAt(Instant.now());
         student.setLevel(dto.getLevel());
         student.setFirstName(dto.getFirstName());
         student.setLastName(dto.getLastName());
         student.setEmail(dto.getEmail());
-        student.setDepartment(dto.getDepartment());
+        student.setDepartment(department);
+
         return studentRepository.save(student);
     }
 

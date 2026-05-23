@@ -31,8 +31,9 @@ public class Student {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "department", nullable = false)
-    private String department;
+    @ManyToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
 
     @Column(name = "level", nullable = false)
     private int level;

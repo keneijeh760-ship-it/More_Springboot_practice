@@ -4,6 +4,7 @@ import com.swelist.spring_practice.Repository.UserRepository;
 import com.swelist.spring_practice.dto.RegisterRequest;
 import com.swelist.spring_practice.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,32 +12,33 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+
 public class UserService {
 
     private final UserRepository userRepository;
 
-    public User createUser(RegisterRequest registerRequest) {
+
+    public void createUser(RegisterRequest registerRequest) {
 
          User user = mapToUser(registerRequest);
-         Optional<User> optionalUser = userRepository.findById(user.getId());
-
+         Optional<User> optionalUser = userRepository.findUserByEmail(registerRequest.getEmail());
          if (optionalUser.isPresent()) {
-             throw new RuntimeException("User with id " + user.getId() + " already exists");
+             throw new RuntimeException("User with EMAIL " + user.getEmail() + " already exists");
          }
-         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-         return userRepository.save(user);
+
+         userRepository.save(user);
 
 
     }
 
     private User mapToUser(RegisterRequest registerRequest) {
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return User.builder()
-                .id(registerRequest.getId())
                 .firstName(registerRequest.getFirstName())
                 .lastName(registerRequest.getLastName())
                 .email(registerRequest.getEmail())
-                .password(registerRequest.getPassword())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .build();
 
 

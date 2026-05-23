@@ -11,10 +11,10 @@ email VARCHAR(150) NOT NULL UNIQUE,
 level INT NOT NULL,
 department_id BIGINT NOT NULL,
 created_at TIMESTAMP NOT NULL,
-updated_at TIMESTAMP NOT NULL
+updated_at TIMESTAMP NOT NULL,
 
 CONSTRAINT student_department_fk
 FOREIGN KEY (department_id)
-REFERENCES  department(id);
+REFERENCES  department(id)
 );
 

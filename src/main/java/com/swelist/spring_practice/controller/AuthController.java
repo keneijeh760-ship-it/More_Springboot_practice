@@ -1,6 +1,7 @@
 package com.swelist.spring_practice.controller;
 
 import com.swelist.spring_practice.Service.UserService;
+import com.swelist.spring_practice.dto.AuthResponse;
 import com.swelist.spring_practice.dto.LoginRequest;
 import com.swelist.spring_practice.dto.RegisterRequest;
 import com.swelist.spring_practice.entity.User;
@@ -20,14 +21,14 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody RegisterRequest registerRequest) {
-        userService.createUser(registerRequest);
-        return ResponseEntity.status(201).build();
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest registerRequest) {
+        AuthResponse response = userService.createUser(registerRequest);
+        return ResponseEntity.status(201).body(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
-        userService.login(loginRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+        AuthResponse response = userService.login(loginRequest);
+        return ResponseEntity.ok(response);
     }
 }

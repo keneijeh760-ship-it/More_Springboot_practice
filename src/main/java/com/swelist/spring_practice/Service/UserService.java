@@ -4,8 +4,9 @@ import com.swelist.spring_practice.Repository.UserRepository;
 import com.swelist.spring_practice.dto.LoginRequest;
 import com.swelist.spring_practice.dto.RegisterRequest;
 import com.swelist.spring_practice.entity.User;
+import com.swelist.spring_practice.security.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
+import com.swelist.spring_practice.dto.AuthResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,10 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
 
-    public void createUser(RegisterRequest registerRequest) {
+    public AuthResponse createUser(RegisterRequest registerRequest) {
 
          User user = mapToUser(registerRequest);
          Optional<User> optionalUser = userRepository.findUserByEmail(registerRequest.getEmail());
@@ -30,11 +32,16 @@ public class UserService {
          }
 
          userRepository.save(user);
+        String token = jwtService.generateToken(user.getEmail());
+
+        return AuthResponse.builder()
+                .token(token)
+                .build();
 
 
     }
 
-    public void login(LoginRequest loginRequest) {
+    public AuthResponse login(LoginRequest loginRequest) {
         User user = userRepository.findUserByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
@@ -46,6 +53,11 @@ public class UserService {
         if (!passwordMatches) {
             throw new RuntimeException("Invalid email or password");
         }
+        String token = jwtService.generateToken(user.getEmail());
+
+        return AuthResponse.builder()
+                .token(token)
+                .build();
     }
 
     private User mapToUser(RegisterRequest registerRequest) {

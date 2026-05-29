@@ -7,6 +7,8 @@ import com.swelist.spring_practice.entity.User;
 import com.swelist.spring_practice.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import com.swelist.spring_practice.dto.AuthResponse;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,6 +26,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
 
     public AuthResponse createUser(RegisterRequest registerRequest) {
@@ -45,18 +48,13 @@ public class UserService implements UserDetailsService {
     }
 
     public AuthResponse login(LoginRequest loginRequest) {
-        User user = userRepository.findUserByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
-
-        boolean passwordMatches = passwordEncoder.matches(
-                loginRequest.getPassword(),
-                user.getPassword()
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                )
         );
-
-        if (!passwordMatches) {
-            throw new RuntimeException("Invalid email or password");
-        }
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(loginRequest.getEmail());
 
         return AuthResponse.builder()
                 .token(token)
